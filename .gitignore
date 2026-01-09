@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+*.mkv
 *.py[cod]
 *$py.class
 *.so
