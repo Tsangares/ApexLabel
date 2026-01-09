@@ -11,18 +11,37 @@
 
 Object detection annotation tool with SAM click-to-segment and integrated YOLO training.
 
-Early-2000s inspired UI. Built for speed.
+I'm not much of a designer, so I tried to make it look like early 2000s freeware.
+
+![ApexLabel Demo](assets/demo.gif)
 
 ---
 
-## What It Does
+## How It Works
 
-Click on objects. SAM segments them. Train YOLO. Repeat.
+### Click to Segment
 
-- **SAM Integration** — Click anywhere on an object, get a precise segmentation mask
-- **YOLO Training** — Export annotations and train models without leaving the app
-- **Prediction Assist** — Use your trained model to pre-label new images
-- **Manual Fallback** — Draw bounding boxes when SAM isn't cooperating
+Click on any object and SAM automatically creates a segmentation mask.
+
+![SAM Segmentation](assets/sam_segmentation.gif)
+
+### Pan and Zoom
+
+`Ctrl+Scroll` to zoom. Hold `Space` and drag to pan.
+
+![Pan and Zoom](assets/pan_zoom.gif)
+
+### Manual Mode + Delete
+
+Switch to manual mode to draw bounding boxes. `Shift+Click` to delete annotations.
+
+![Manual and Delete](assets/manual_delete.gif)
+
+### Undo
+
+`Ctrl+Z` to undo.
+
+![Undo](assets/undo.gif)
 
 ---
 
