@@ -645,15 +645,15 @@ class SAMAnnotator:
         
         # Tab 1: Annotation Controls
         annotation_tab = tk.Frame(self.notebook, bg=self.colors['bg_panel'])
-        self.notebook.add(annotation_tab, text="📝 ANNOTATION")
+        self.notebook.add(annotation_tab, text="📝 ANNOT")
         
         # Tab 2: Prediction Controls  
         prediction_tab = tk.Frame(self.notebook, bg=self.colors['bg_panel'])
-        self.notebook.add(prediction_tab, text="🎯 PREDICTION")
+        self.notebook.add(prediction_tab, text="🎯 PRED")
         
         # Tab 3: Training Controls
         training_tab = tk.Frame(self.notebook, bg=self.colors['bg_panel'])
-        self.notebook.add(training_tab, text="🏋️ TRAINING")
+        self.notebook.add(training_tab, text="🏋️ TRAIN")
         
         # === ANNOTATION TAB CONTENTS ===
         

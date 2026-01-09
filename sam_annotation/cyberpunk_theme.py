@@ -13,21 +13,21 @@ from typing import Dict, Any
 class CyberpunkTheme:
     """Cyberpunk/Hacker aesthetic theme manager"""
 
-    # Base resolution for scaling (designed at this resolution)
+    # Base resolution for scaling (the original design target)
     BASE_WIDTH = 1920
     BASE_HEIGHT = 1080
 
-    # Base font sizes (at 1920x1080)
+    # Base font sizes (smaller for better fit)
     BASE_FONTS = {
-        'title': 12,
-        'header': 12,
-        'button': 11,
-        'label': 11,
-        'info': 10,
-        'small': 9,
-        'large': 14,
-        'xlarge': 16,
-        'xxlarge': 24,
+        'title': 7,
+        'header': 7,
+        'button': 7,
+        'label': 7,
+        'info': 6,
+        'small': 6,
+        'large': 8,
+        'xlarge': 10,
+        'xxlarge': 14,
     }
 
     # Color palette - neon cyberpunk vibes
@@ -108,8 +108,11 @@ class CyberpunkTheme:
         # Use the smaller scale to ensure everything fits
         scale = min(width_scale, height_scale)
 
-        # Clamp scale between reasonable bounds (0.6 to 1.5)
-        scale = max(0.6, min(1.5, scale))
+        # Clamp scale between reasonable bounds (0.7 to 2.0)
+        # Allows scaling up on larger screens
+        scale = max(0.7, min(2.0, scale))
+
+        print(f"[UI Scale] Screen: {screen_width}x{screen_height}, Scale factor: {scale:.2f}")
 
         return scale
 
