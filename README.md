@@ -13,7 +13,9 @@ Object detection annotation tool with SAM click-to-segment and integrated YOLO t
 
 I'm not much of a designer, so I tried to make it look like early 2000s freeware.
 
-![ApexLabel Demo](assets/demo.gif)
+<p align="center">
+  <img src="assets/demo.gif" alt="ApexLabel Demo">
+</p>
 
 ---
 
@@ -33,25 +35,33 @@ I'm not much of a designer, so I tried to make it look like early 2000s freeware
 
 Click on any object and SAM automatically creates a segmentation mask.
 
-![SAM Segmentation](assets/sam_segmentation.gif)
+<p align="center">
+  <img src="assets/sam_segmentation.gif" alt="SAM Segmentation">
+</p>
 
 ### Pan and Zoom
 
 `Ctrl+Scroll` to zoom. Hold `Space` and drag to pan.
 
-![Pan and Zoom](assets/pan_zoom.gif)
+<p align="center">
+  <img src="assets/pan_zoom.gif" alt="Pan and Zoom">
+</p>
 
 ### Manual Mode + Delete
 
 Switch to manual mode to draw bounding boxes. `Shift+Click` to delete annotations.
 
-![Manual and Delete](assets/manual_delete.gif)
+<p align="center">
+  <img src="assets/manual_delete.gif" alt="Manual and Delete">
+</p>
 
 ### Undo
 
 `Ctrl+Z` to undo.
 
-![Undo](assets/undo.gif)
+<p align="center">
+  <img src="assets/undo.gif" alt="Undo">
+</p>
 
 ---
 
