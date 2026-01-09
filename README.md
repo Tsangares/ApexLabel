@@ -17,6 +17,16 @@ I'm not much of a designer, so I tried to make it look like early 2000s freeware
 
 ---
 
+## Key Features
+
+- **Auto-save** — Annotations save automatically when you navigate to a new image. No manual saving required.
+
+- **YOLO Bootstrap Training** — Train a YOLO model on your annotations, then enable prediction assist. The model pre-labels new images so you just tweak the predictions instead of starting from scratch.
+
+- **LLaVA Validation** — Optional LLM-powered validation using LLaVA to review annotations and filter false positives. Useful for large datasets where manual review isn't feasible.
+
+---
+
 ## How It Works
 
 ### Click to Segment
@@ -97,12 +107,14 @@ Free for non-commercial use. Tiles download in a spiral pattern from center.
 
 ## Training Loop
 
-1. Annotate images with SAM
-2. Export → YOLO format
-3. Train model (built-in)
-4. Enable prediction assist
-5. Annotate faster with pre-labels
-6. Repeat
+The bootstrap workflow lets you build a detector with minimal manual effort:
+
+1. **Annotate** a small batch of images with SAM (~50-100)
+2. **Export** annotations to YOLO format
+3. **Train** a YOLO model (built-in, one click)
+4. **Enable prediction assist** — model pre-labels new images
+5. **Review and tweak** predictions instead of annotating from scratch
+6. **Repeat** — each iteration improves the model
 
 Best model saves to `models/current_best_yolo.pt`
 
