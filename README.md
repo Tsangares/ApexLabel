@@ -1,6 +1,6 @@
-# SAM-Bootstrap
+# ApexLabel
 
-Interactive annotation tool with SAM (Segment Anything Model) and YOLO bootstrap training.
+Interactive object detection annotation tool featuring SAM (Segment Anything Model) click-to-segment and integrated YOLO training. Built with a retro early-2000s aesthetic.
 
 ## Quick Start
 
@@ -15,36 +15,21 @@ source .venv/bin/activate
 cp config/default_config.yaml my_config.yaml
 # Edit my_config.yaml and set class_names: ["your_object"]
 
-# Run the annotation tool
+# Run ApexLabel
 python -m sam_annotation --config my_config.yaml data/sample_images
 ```
 
-## Configuration
-
-Create a YAML config file with at minimum your class names:
-
-```yaml
-class_names: ["vehicle"]  # or ["car", "truck", "bus"] for multi-class
-```
-
-See `config/default_config.yaml` for all available options including:
-- LLaVA prompt configuration for bootstrap validation
-- YOLO training parameters (epochs, batch size, image size)
-- GPU device settings
-- Directory paths
-
 ## Features
 
-### SAM Annotation Tool
-
-- **Click-to-segment**: Click on objects and SAM automatically segments them
+- **Click-to-segment**: Click on objects and SAM automatically generates precise segmentation masks
 - **Manual mode**: Fallback to drawing bounding boxes manually
 - **Threshold adjustment**: Scroll wheel to adjust segmentation sensitivity
 - **YOLO export**: Export annotations to YOLO format for training
 - **Built-in YOLO training**: Train YOLO models directly from the tool
 - **Prediction assist**: Toggle YOLO predictions to speed up annotation
+- **Retro UI**: Early-2000s inspired interface with cyberpunk theming
 
-### Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
@@ -57,24 +42,29 @@ See `config/default_config.yaml` for all available options including:
 | Ctrl+Z | Undo last segmentation |
 | Ctrl+S | Save annotations |
 
-### LLaVA Bootstrap (Optional)
+## Configuration
 
-For automated bootstrap training with LLaVA validation:
+Create a YAML config file with your class names:
 
-1. Install Ollama: https://ollama.ai
-2. Pull LLaVA model: `ollama pull llava:7b`
-3. Configure your prompts in `config/default_config.yaml`
-4. Run: `python scripts/run_bootstrap.py --config my_config.yaml --start-llava`
+```yaml
+class_names: ["vehicle"]  # or ["car", "truck", "bus"] for multi-class
+```
+
+See `config/default_config.yaml` for all options including:
+- YOLO training parameters (epochs, batch size, image size)
+- GPU device settings
+- Directory paths
+- LLaVA prompt configuration (for bootstrap validation)
 
 ## Directory Structure
 
 ```
-sam-bootstrap/
+ApexLabel/
 ├── config/                 # Configuration files
 │   ├── project_config.py   # Config class
 │   └── default_config.yaml # Template config
 ├── sam_annotation/         # Annotation tool
-├── bootstrap/              # Bootstrap training
+├── bootstrap/              # Bootstrap training with LLaVA
 ├── prompts/                # LLaVA prompt templates
 ├── scripts/                # Helper scripts
 ├── data/                   # Your data (gitignored)
@@ -121,6 +111,15 @@ class_names: ["car", "truck", "bus", "motorcycle"]
 
 The annotation tool will use the first class as default, but you can change the label in the UI.
 
+### LLaVA Bootstrap (Optional)
+
+For automated bootstrap training with LLaVA validation:
+
+1. Install Ollama: https://ollama.ai
+2. Pull LLaVA model: `ollama pull llava:7b`
+3. Configure your prompts in `config/default_config.yaml`
+4. Run: `python scripts/run_bootstrap.py --config my_config.yaml --start-llava`
+
 ## License
 
-MIT License - see LICENSE file for details.
+MIT License

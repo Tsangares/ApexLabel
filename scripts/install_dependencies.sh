@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== SAM-Bootstrap Installation ==="
+echo "=== ApexLabel Installation ==="
 echo ""
 
 # Check Python version
@@ -63,6 +63,6 @@ echo "2. Copy and customize the configuration:"
 echo "   cp config/default_config.yaml my_config.yaml"
 echo "   # Edit my_config.yaml and set class_names"
 echo ""
-echo "3. Run the annotation tool:"
+echo "3. Run ApexLabel:"
 echo "   python -m sam_annotation --config my_config.yaml data/sample_images"
 echo ""

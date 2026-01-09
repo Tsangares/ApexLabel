@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Setup script for SAM-Bootstrap."""
+"""Setup script for ApexLabel."""
 
 from setuptools import setup, find_packages
 from pathlib import Path
@@ -9,14 +9,14 @@ readme_path = Path(__file__).parent / "README.md"
 long_description = readme_path.read_text() if readme_path.exists() else ""
 
 setup(
-    name="sam-bootstrap",
+    name="apexlabel",
     version="1.0.0",
-    description="SAM-based annotation tool with YOLO bootstrap training",
+    description="Interactive object detection annotation tool with SAM and YOLO training",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Your Name",
     author_email="your.email@example.com",
-    url="https://github.com/yourusername/sam-bootstrap",
+    url="https://github.com/yourusername/ApexLabel",
     packages=find_packages(),
     python_requires=">=3.8",
     install_requires=[
@@ -41,7 +41,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "sam-annotate=sam_annotation:main",
+            "apexlabel=sam_annotation:main",
         ],
     },
     classifiers=[
@@ -57,5 +57,5 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Image Recognition",
     ],
-    keywords="sam segment-anything yolo annotation machine-learning computer-vision",
+    keywords="apexlabel sam segment-anything yolo annotation object-detection computer-vision",
 )
