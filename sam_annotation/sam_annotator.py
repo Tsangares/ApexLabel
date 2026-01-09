@@ -68,12 +68,16 @@ class SAMAnnotator:
 
         # Initial title (will be updated with HITS counter)
         self.update_window_title()
-        self.root.geometry("1600x1000")
 
-        # Initialize cyberpunk theme
+        # Initialize cyberpunk theme (calculates scale factor based on screen)
         self.theme = CyberpunkTheme(root)
         self.colors = self.theme.get_cyber_colors()
         self.symbols = self.theme.get_cyber_symbols()
+
+        # Set window geometry based on screen resolution
+        window_width = self.theme.get_scaled_size(1600)
+        window_height = self.theme.get_scaled_size(1000)
+        self.root.geometry(f"{window_width}x{window_height}")
 
         # Configure root window
         self.root.configure(bg=self.colors['bg_primary'])
@@ -96,8 +100,9 @@ class SAMAnnotator:
         self.original_image = None
         self.canvas_image = None
         self.image_scale = 1.0
-        self.canvas_width = 900
-        self.canvas_height = 700
+        # Scale canvas dimensions based on screen resolution (after theme is initialized)
+        self.canvas_width = self.theme.get_scaled_size(900)
+        self.canvas_height = self.theme.get_scaled_size(700)
 
         # Image management
         self.image_list = []
@@ -656,11 +661,11 @@ class SAMAnnotator:
         label_section = tk.Frame(annotation_tab, bg=self.colors['bg_panel'])
         label_section.pack(fill=tk.X, pady=5)
         
-        tk.Label(label_section, 
-            text=f"{self.symbols['target']} TARGET CLASSIFICATION", 
-            bg=self.colors['bg_panel'], 
+        tk.Label(label_section,
+            text=f"{self.symbols['target']} TARGET CLASSIFICATION",
+            bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         self.label_var = tk.StringVar(value=self.current_label)
@@ -671,7 +676,7 @@ class SAMAnnotator:
             insertbackground=self.colors['neon_cyan'],
             relief='solid',
             bd=1,
-            font=('Consolas', 12)
+            font=self.theme.get_font('header')
         )
         self.label_entry.pack(fill=tk.X, pady=5)
         self.label_entry.bind('<Return>', self.on_label_change)
@@ -684,7 +689,7 @@ class SAMAnnotator:
             text=f"{self.symbols['lightning']} ANNOTATION MODE",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Mode toggle button with visual indicator
@@ -695,7 +700,7 @@ class SAMAnnotator:
             fg=self.colors['bg_primary'],
             activebackground=self.colors['neon_orange'],
             activeforeground=self.colors['bg_primary'],
-            font=('Consolas', 12, 'bold'),
+            font=self.theme.get_font('header', bold=True),
             relief='solid',
             bd=2,
             cursor='hand2'
@@ -707,7 +712,7 @@ class SAMAnnotator:
             text=self.get_mode_status_text(),
             bg=self.colors['bg_panel'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 12)
+            font=self.theme.get_font('header')
         )
         self.mode_status_label.pack(anchor=tk.W, pady=(0, 5))
         
@@ -719,7 +724,7 @@ class SAMAnnotator:
             text=f"{self.symbols['scanner']} DATA STREAM NAVIGATION",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_green'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Navigation buttons with cyber styling
@@ -748,7 +753,7 @@ class SAMAnnotator:
             selectcolor=self.colors['bg_secondary'],
             activebackground=self.colors['bg_panel'],
             activeforeground=self.colors['neon_cyan'],
-            font=('Consolas', 11)
+            font=self.theme.get_font('label')
         )
         self.skip_checkbox.pack(anchor=tk.W)
         
@@ -756,7 +761,7 @@ class SAMAnnotator:
             text="◢ NO DATA STREAMS LOADED ◣",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 11)
+            font=self.theme.get_font('label')
         )
         self.image_info_label.pack(fill=tk.X, pady=5)
         
@@ -788,7 +793,7 @@ class SAMAnnotator:
             text=f"{self.symbols['neural']} NEURAL SEGMENTATION",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Threshold control with cyber styling
@@ -799,7 +804,7 @@ class SAMAnnotator:
             text=f"{self.symbols['lightning']} NEURAL THRESHOLD:",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_primary'],
-            font=('Consolas', 11)
+            font=self.theme.get_font('label')
         ).pack(anchor=tk.W)
         
         self.threshold_var = tk.DoubleVar(value=self.threshold)
@@ -813,7 +818,7 @@ class SAMAnnotator:
             activebackground=self.colors['neon_cyan'],
             highlightbackground=self.colors['bg_panel'],
             troughcolor=self.colors['bg_primary'],
-            font=('Consolas', 12)
+            font=self.theme.get_font('header')
         )
         self.threshold_scale.pack(fill=tk.X, pady=2)
         
@@ -821,7 +826,7 @@ class SAMAnnotator:
             text=f"◢ PRECISION: {self.threshold:.3f} ◣",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         )
         self.threshold_label.pack(anchor=tk.W)
         
@@ -833,7 +838,7 @@ class SAMAnnotator:
             text="◎ MAGNIFICATION: 1.0x",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 11)
+            font=self.theme.get_font('label')
         )
         self.zoom_label.pack(side=tk.LEFT)
         
@@ -848,7 +853,7 @@ class SAMAnnotator:
             text=f"{self.symbols['atom']} NEURAL OPERATIONS:",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         ).pack(anchor=tk.W, pady=(0, 5))
         
         # Action buttons with cyber styling
@@ -880,7 +885,7 @@ class SAMAnnotator:
             text="◢◣ NEURAL INTERFACE COMMANDS ◤◥",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack()
         
         instructions_text = "◆ CLICK: Target Lock\n◆ SHIFT+CLICK: Eliminate\n◆ ENTER: Toggle SAM/Manual\n◆ WHEEL: Zoom Matrix\n◆ CTRL+WHEEL: Neural Threshold\n◆ SPACE+DRAG: Navigate\n◆ CTRL+F: Auto-Fit"
@@ -888,7 +893,7 @@ class SAMAnnotator:
             text=instructions_text,
             bg=self.colors['bg_accent'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             justify=tk.LEFT
         ).pack(pady=5)
         
@@ -902,7 +907,7 @@ class SAMAnnotator:
             text=f"{self.symbols['neural']} YOLO PREDICTION ASSIST",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Model selection
@@ -913,7 +918,7 @@ class SAMAnnotator:
             text="📦 MODEL:",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 10, 'bold')
+            font=self.theme.get_font('info', bold=True)
         ).pack(side=tk.LEFT)
         
         self.model_var = tk.StringVar()
@@ -921,7 +926,7 @@ class SAMAnnotator:
         self.model_dropdown = tkinter_ttk.Combobox(model_frame,
             textvariable=self.model_var,
             state="readonly",
-            font=('Consolas', 9),
+            font=self.theme.get_font('small'),
             width=35
         )
         self.model_dropdown.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 0))
@@ -944,7 +949,7 @@ class SAMAnnotator:
             selectcolor=self.colors['bg_secondary'],
             activebackground=self.colors['bg_panel'],
             activeforeground=self.colors['neon_orange'],
-            font=('Consolas', 11)
+            font=self.theme.get_font('label')
         )
         self.prediction_checkbox.pack(anchor=tk.W)
         
@@ -985,7 +990,7 @@ class SAMAnnotator:
             text="⚡ PREDICTION PROGRESS:",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_primary'],
-            font=('Consolas', 10)
+            font=self.theme.get_font('info')
         ).pack(anchor=tk.W)
         
         from tkinter import ttk
@@ -1001,7 +1006,7 @@ class SAMAnnotator:
             text="◢ READY TO PREDICT ◣",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 10)
+            font=self.theme.get_font('info')
         )
         self.progress_label.pack(anchor=tk.W)
         
@@ -1010,7 +1015,7 @@ class SAMAnnotator:
             text="◢ CACHE: 0 predictions stored ◣",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 11)
+            font=self.theme.get_font('label')
         )
         self.cache_status_label.pack(anchor=tk.W, pady=(0, 5))
         
@@ -1024,7 +1029,7 @@ class SAMAnnotator:
             text=f"{self.symbols['neural']} MODEL TRAINING & EXPORT",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Dataset status
@@ -1032,7 +1037,7 @@ class SAMAnnotator:
             text="◢ DATASET: Calculating... ◣",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_secondary'],
-            font=('Consolas', 10)
+            font=self.theme.get_font('info')
         )
         self.dataset_status_label.pack(anchor=tk.W, pady=5)
         
@@ -1057,7 +1062,7 @@ class SAMAnnotator:
             text="🔧 MODEL MANAGEMENT",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         ).pack(anchor=tk.W)
         
         # Model selection (duplicate for training tab)
@@ -1068,7 +1073,7 @@ class SAMAnnotator:
             text="📦 ACTIVE MODEL:",
             bg=self.colors['bg_panel'],
             fg=self.colors['text_primary'],
-            font=('Consolas', 10)
+            font=self.theme.get_font('info')
         ).pack(anchor=tk.W)
         
         # Duplicate model dropdown for training tab
@@ -1076,7 +1081,7 @@ class SAMAnnotator:
         self.model_dropdown_training = tkinter_ttk.Combobox(model_select_frame,
             textvariable=self.model_var_training,
             state="readonly",
-            font=('Consolas', 9),
+            font=self.theme.get_font('small'),
             width=50
         )
         self.model_dropdown_training.pack(fill=tk.X, pady=2)
@@ -1126,7 +1131,7 @@ class SAMAnnotator:
             text=f"{self.symbols['data']} DATA MANAGEMENT",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_purple'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Stats display - more vertical layout
@@ -1138,7 +1143,7 @@ class SAMAnnotator:
             text="◢ CURRENT: 0 segments ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_green'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         )
         self.current_stats_label.pack(fill=tk.X, pady=1)
         
@@ -1147,7 +1152,7 @@ class SAMAnnotator:
             text="◢ PROCESSED: 0/0 images ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         )
         self.processed_stats_label.pack(fill=tk.X, pady=1)
         
@@ -1156,7 +1161,7 @@ class SAMAnnotator:
             text="◢ WITH SEGMENTS: 0 ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_purple'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         )
         self.with_segments_label.pack(fill=tk.X, pady=1)
         
@@ -1165,7 +1170,7 @@ class SAMAnnotator:
             text="◢ TOTAL SEGMENTS: 0 ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 11, 'bold')
+            font=self.theme.get_font('button', bold=True)
         )
         self.total_stats_label.pack(fill=tk.X, pady=1)
         
@@ -1569,16 +1574,16 @@ class SAMAnnotator:
                 center_x, center_y - 200,
                 text="◢◣ ANNOTATION MISSION COMPLETE ◤◥",
                 fill=self.colors['neon_cyan'],
-                font=('Consolas', 24, 'bold'),
+                font=self.theme.get_font('xxlarge', bold=True),
                 tags="completion"
             )
-            
+
             # Subtitle
             self.canvas.create_text(
                 center_x, center_y - 160,
                 text="🎯 ALL IMAGES PROCESSED SUCCESSFULLY 🎯",
                 fill=self.colors['neon_green'],
-                font=('Consolas', 16, 'bold'),
+                font=self.theme.get_font('xlarge', bold=True),
                 tags="completion"
             )
             
@@ -1605,11 +1610,12 @@ class SAMAnnotator:
                     elif 'COMPLETION' in stat:
                         color = self.colors['neon_green']
                     
+                    is_bold = any(x in stat for x in ['HITS', 'COMPLETION'])
                     self.canvas.create_text(
                         center_x, stats_y_start + (i * line_height),
                         text=stat,
                         fill=color,
-                        font=('Consolas', 14, 'bold' if any(x in stat for x in ['HITS', 'COMPLETION']) else 'normal'),
+                        font=self.theme.get_font('large', bold=is_bold),
                         tags="completion"
                     )
             
@@ -1618,7 +1624,7 @@ class SAMAnnotator:
                 center_x, center_y + 120,
                 text="📋 NEXT STEPS:",
                 fill=self.colors['neon_purple'],
-                font=('Consolas', 14, 'bold'),
+                font=self.theme.get_font('large', bold=True),
                 tags="completion"
             )
             
@@ -1634,7 +1640,7 @@ class SAMAnnotator:
                     center_x, center_y + 150 + (i * 25),
                     text=instruction,
                     fill=self.colors['text_secondary'],
-                    font=('Consolas', 12),
+                    font=self.theme.get_font('header'),
                     tags="completion"
                 )
             
@@ -1643,7 +1649,7 @@ class SAMAnnotator:
                 center_x, center_y + 280,
                 text="◢◣◤◥ ⚡ NEURAL MATRIX ANNOTATION SYSTEM ⚡ ◢◣◤◥",
                 fill=self.colors['border_glow'],
-                font=('Consolas', 12, 'bold'),
+                font=self.theme.get_font('header', bold=True),
                 tags="completion"
             )
             
@@ -2774,7 +2780,7 @@ class SAMAnnotator:
             center_x, center_y,
             text=f"{width}x{height}",
             fill=self.colors['neon_orange'],
-            font=('Consolas', 12, 'bold'),
+            font=self.theme.get_font('header', bold=True),
             tags="temp_bbox"
         )
             
@@ -2874,7 +2880,7 @@ class SAMAnnotator:
                     x1 + 2, y1 - 15,
                     text=f"PRED: {confidence:.2f}",
                     fill=color,
-                    font=('Consolas', 10, 'bold'),
+                    font=self.theme.get_font('info', bold=True),
                     anchor=tk.W,
                     tags=f"predicted_label_{i}"
                 )
@@ -3528,7 +3534,7 @@ names: {class_names}
             text=f"{self.symbols['lightning']} GPU NEURAL CORES",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         gpu_frame = tk.Frame(gpu_section, bg=self.colors['bg_accent'], relief='solid', bd=1)
@@ -3538,7 +3544,7 @@ names: {class_names}
             text="◢ SAM CORE: LOADING... ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             width=30,  # Fixed width
             anchor='center'
         )
@@ -3548,7 +3554,7 @@ names: {class_names}
             text="◢ YOLO CORE: LOADING... ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_green'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             width=30,  # Fixed width
             anchor='center'
         )
@@ -3564,7 +3570,7 @@ names: {class_names}
             text=f"{self.symbols['processing']} PERFORMANCE",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_pink'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         perf_frame = tk.Frame(perf_section, bg=self.colors['bg_accent'], relief='solid', bd=1)
@@ -3574,7 +3580,7 @@ names: {class_names}
             text="◢ RENDER TIME: 0.0ms ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             width=30,  # Fixed width
             anchor='center'
         )
@@ -3584,7 +3590,7 @@ names: {class_names}
             text="◢ AVG RENDER: 0.0ms ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             width=30,  # Fixed width
             anchor='center'
         )
@@ -3598,7 +3604,7 @@ names: {class_names}
             text=f"{self.symbols['atom']} YOLO TRAINING",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_green'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         yolo_buttons = tk.Frame(yolo_section, bg=self.colors['bg_panel'])
@@ -3621,7 +3627,7 @@ names: {class_names}
             text=f"{self.symbols['data']} MEMORY BANK",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_purple'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         memory_frame = tk.Frame(memory_section, bg=self.colors['bg_accent'], relief='solid', bd=1)
@@ -3631,7 +3637,7 @@ names: {class_names}
             text="◢ GPU MEMORY: SCANNING... ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_pink'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             width=30,  # Fixed width
             anchor='center'
         )
@@ -3641,7 +3647,7 @@ names: {class_names}
             text="◢ CACHE STATUS: EMPTY ◣",
             bg=self.colors['bg_accent'],
             fg=self.colors['neon_cyan'],
-            font=('Consolas', 12),
+            font=self.theme.get_font('header'),
             width=30,  # Fixed width
             anchor='center'
         )
@@ -3655,7 +3661,7 @@ names: {class_names}
             text=f"{self.symbols['target']} SYSTEM STATUS",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_orange'],
-            font=('Consolas', 12, 'bold')
+            font=self.theme.get_font('header', bold=True)
         ).pack(anchor=tk.W)
         
         # Animated status indicator with fixed width
@@ -3663,7 +3669,7 @@ names: {class_names}
             text="◢◣◤◥ NEURAL MATRIX ONLINE ◢◣◤◥",
             bg=self.colors['bg_panel'],
             fg=self.colors['neon_green'],
-            font=('Consolas', 11, 'bold'),
+            font=self.theme.get_font('button', bold=True),
             width=35,  # Fixed character width
             anchor='center'
         )
@@ -3855,21 +3861,21 @@ class TrainingParametersDialog:
         main_frame.pack(fill=tk.BOTH, expand=True)
         
         # Title
-        title_label = tk.Label(main_frame, 
+        title_label = tk.Label(main_frame,
             text="🏋️ YOLO Training Configuration",
-            font=('Consolas', 14, 'bold'))
+            font=self.theme.get_font('large', bold=True))
         title_label.pack(pady=(0, 20))
         
         # Dataset info
         info_label = tk.Label(main_frame,
             text=f"📊 Dataset: {annotation_count} annotated images",
-            font=('Consolas', 10))
+            font=self.theme.get_font('info'))
         info_label.pack(pady=(0, 20))
         
         # Epochs
         epochs_frame = tk.Frame(main_frame)
         epochs_frame.pack(fill=tk.X, pady=5)
-        tk.Label(epochs_frame, text="Epochs:", font=('Consolas', 10)).pack(side=tk.LEFT)
+        tk.Label(epochs_frame, text="Epochs:", font=self.theme.get_font('info')).pack(side=tk.LEFT)
         self.epochs_var = tk.StringVar(value="100")
         epochs_entry = tk.Entry(epochs_frame, textvariable=self.epochs_var, width=10)
         epochs_entry.pack(side=tk.RIGHT)
@@ -3877,7 +3883,7 @@ class TrainingParametersDialog:
         # Image size
         size_frame = tk.Frame(main_frame)
         size_frame.pack(fill=tk.X, pady=5)
-        tk.Label(size_frame, text="Image Size:", font=('Consolas', 10)).pack(side=tk.LEFT)
+        tk.Label(size_frame, text="Image Size:", font=self.theme.get_font('info')).pack(side=tk.LEFT)
         self.size_var = tk.StringVar(value="640")
         from tkinter import ttk as tkinter_ttk
         size_combo = tkinter_ttk.Combobox(size_frame, textvariable=self.size_var, 
@@ -3887,7 +3893,7 @@ class TrainingParametersDialog:
         # Batch size
         batch_frame = tk.Frame(main_frame)
         batch_frame.pack(fill=tk.X, pady=5)
-        tk.Label(batch_frame, text="Batch Size:", font=('Consolas', 10)).pack(side=tk.LEFT)
+        tk.Label(batch_frame, text="Batch Size:", font=self.theme.get_font('info')).pack(side=tk.LEFT)
         self.batch_var = tk.StringVar(value="8")
         batch_combo = tkinter_ttk.Combobox(batch_frame, textvariable=self.batch_var, 
                                  values=["1", "2", "4", "8", "16", "32"], width=8, state="readonly")

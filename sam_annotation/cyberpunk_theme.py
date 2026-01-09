@@ -12,7 +12,24 @@ from typing import Dict, Any
 
 class CyberpunkTheme:
     """Cyberpunk/Hacker aesthetic theme manager"""
-    
+
+    # Base resolution for scaling (designed at this resolution)
+    BASE_WIDTH = 1920
+    BASE_HEIGHT = 1080
+
+    # Base font sizes (at 1920x1080)
+    BASE_FONTS = {
+        'title': 12,
+        'header': 12,
+        'button': 11,
+        'label': 11,
+        'info': 10,
+        'small': 9,
+        'large': 14,
+        'xlarge': 16,
+        'xxlarge': 24,
+    }
+
     # Color palette - neon cyberpunk vibes
     COLORS = {
         # Dark background tones
@@ -71,8 +88,51 @@ class CyberpunkTheme:
         self.root = root
         self.animation_active = True
         self.animation_frame = 0
+
+        # Calculate UI scale factor based on screen resolution
+        self.scale_factor = self._calculate_scale_factor()
+        self._cache_scaled_fonts()
+
         self.setup_styles()
         self.start_animations()
+
+    def _calculate_scale_factor(self) -> float:
+        """Calculate scale factor based on screen resolution"""
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        # Calculate scale based on the smaller ratio to fit everything
+        width_scale = screen_width / self.BASE_WIDTH
+        height_scale = screen_height / self.BASE_HEIGHT
+
+        # Use the smaller scale to ensure everything fits
+        scale = min(width_scale, height_scale)
+
+        # Clamp scale between reasonable bounds (0.6 to 1.5)
+        scale = max(0.6, min(1.5, scale))
+
+        return scale
+
+    def _cache_scaled_fonts(self):
+        """Pre-calculate scaled font sizes"""
+        self.fonts = {}
+        for name, base_size in self.BASE_FONTS.items():
+            self.fonts[name] = max(7, int(base_size * self.scale_factor))
+
+    def get_font(self, size_name: str, bold: bool = False) -> tuple:
+        """Get a scaled font tuple for the given size name"""
+        size = self.fonts.get(size_name, self.fonts['label'])
+        if bold:
+            return ('Consolas', size, 'bold')
+        return ('Consolas', size)
+
+    def get_scaled_size(self, base_size: int) -> int:
+        """Scale any pixel dimension based on screen resolution"""
+        return max(1, int(base_size * self.scale_factor))
+
+    def get_scaled_font_size(self, base_size: int) -> int:
+        """Scale a specific font size"""
+        return max(7, int(base_size * self.scale_factor))
     
     def setup_styles(self):
         """Setup custom TTK styles for cyberpunk theme"""
@@ -117,7 +177,7 @@ class CyberpunkTheme:
         style.configure('Cyber.TLabelframe.Label',
             background=self.COLORS['bg_panel'],
             foreground=self.COLORS['neon_cyan'],
-            font=('Consolas', 12, 'bold')
+            font=self.get_font('header', bold=True)
         )
         
         # Custom button styles
@@ -126,7 +186,7 @@ class CyberpunkTheme:
             foreground=self.COLORS['text_primary'],
             bordercolor=self.COLORS['border_glow'],
             focuscolor=self.COLORS['neon_cyan'],
-            font=('Consolas', 11, 'bold'),
+            font=self.get_font('button', bold=True),
             relief='raised',
             borderwidth=2
         )
@@ -142,17 +202,17 @@ class CyberpunkTheme:
             background=self.COLORS['bg_accent'],
             foreground=self.COLORS['neon_green'],
             bordercolor=self.COLORS['neon_green'],
-            font=('Consolas', 12, 'bold'),
+            font=self.get_font('header', bold=True),
             relief='solid',
             borderwidth=2
         )
-        
-        # Action button styles  
+
+        # Action button styles
         style.configure('Action.TButton',
             background=self.COLORS['button_bg'],
             foreground=self.COLORS['neon_orange'],
             bordercolor=self.COLORS['neon_orange'],
-            font=('Consolas', 11, 'bold'),
+            font=self.get_font('button', bold=True),
             relief='raised',
             borderwidth=2
         )
@@ -170,50 +230,54 @@ class CyberpunkTheme:
         style.configure('Title.TLabel',
             background=self.COLORS['bg_primary'],
             foreground=self.COLORS['neon_cyan'],
-            font=('Consolas', 12, 'bold')
+            font=self.get_font('title', bold=True)
         )
-        
+
         style.configure('Status.TLabel',
             background=self.COLORS['bg_panel'],
             foreground=self.COLORS['neon_green'],
-            font=('Consolas', 11)
+            font=self.get_font('label')
         )
-        
+
         style.configure('Info.TLabel',
             background=self.COLORS['bg_panel'],
             foreground=self.COLORS['text_secondary'],
-            font=('Consolas', 10)
+            font=self.get_font('info')
         )
     
     def create_glowing_frame(self, parent, text="", width=300, height=200) -> tk.Frame:
         """Create a frame with glowing border effect"""
-        outer_frame = tk.Frame(parent, 
-            bg=self.COLORS['border_glow'], 
-            relief='solid', 
+        # Scale dimensions based on screen resolution
+        scaled_width = self.get_scaled_size(width)
+        scaled_height = self.get_scaled_size(height)
+
+        outer_frame = tk.Frame(parent,
+            bg=self.COLORS['border_glow'],
+            relief='solid',
             bd=1,
-            width=width,
-            height=height
+            width=scaled_width,
+            height=scaled_height
         )
-        
+
         inner_frame = tk.Frame(outer_frame,
             bg=self.COLORS['bg_panel'],
             relief='flat',
             bd=2
         )
         inner_frame.pack(fill=tk.BOTH, expand=True, padx=1, pady=1)
-        
+
         # Prevent frame from shrinking/expanding
         outer_frame.pack_propagate(False)
-        
+
         if text:
             title_label = tk.Label(inner_frame,
                 text=f"▰▰▰ {text.upper()} ▰▰▰",
                 bg=self.COLORS['bg_panel'],
                 fg=self.COLORS['neon_cyan'],
-                font=('Consolas', 12, 'bold')
+                font=self.get_font('header', bold=True)
             )
             title_label.pack(pady=(5, 10))
-        
+
         return inner_frame
     
     def create_cyber_button(self, parent, text, command=None, style_color='neon_cyan') -> tk.Button:
@@ -226,7 +290,7 @@ class CyberpunkTheme:
             activeforeground=self.COLORS['bg_primary'],
             relief='raised',
             bd=2,
-            font=('Consolas', 11, 'bold'),
+            font=self.get_font('button', bold=True),
             command=command,
             cursor='hand2'
         )
@@ -234,21 +298,21 @@ class CyberpunkTheme:
     def create_status_display(self, parent) -> tk.Text:
         """Create a terminal-style status display"""
         # Create outer frame for glow effect
-        status_outer = tk.Frame(parent, 
-            bg=self.COLORS['neon_green'], 
-            relief='solid', 
+        status_outer = tk.Frame(parent,
+            bg=self.COLORS['neon_green'],
+            relief='solid',
             bd=1
         )
-        
+
         # Header
         header = tk.Label(status_outer,
             text="◢◣ NEURAL NETWORK STATUS ◤◥",
             bg=self.COLORS['neon_green'],
             fg=self.COLORS['bg_primary'],
-            font=('Consolas', 12, 'bold')
+            font=self.get_font('header', bold=True)
         )
         header.pack(fill=tk.X)
-        
+
         # Status text widget
         status_text = tk.Text(status_outer,
             bg=self.COLORS['bg_primary'],
@@ -256,7 +320,7 @@ class CyberpunkTheme:
             insertbackground=self.COLORS['neon_green'],
             selectbackground=self.COLORS['neon_cyan'],
             selectforeground=self.COLORS['bg_primary'],
-            font=('Consolas', 11),
+            font=self.get_font('label'),
             relief='flat',
             wrap=tk.WORD,
             state=tk.NORMAL
@@ -298,7 +362,7 @@ class CyberpunkTheme:
                 text=title,
                 bg=self.COLORS['bg_panel'],
                 fg=self.COLORS[color],
-                font=('Consolas', 11, 'bold'),
+                font=self.get_font('button', bold=True),
                 anchor='w'
             )
             header.pack(fill=tk.X)
@@ -352,14 +416,14 @@ class CyberpunkTheme:
             'label': {
                 'bg': self.COLORS['bg_panel'],
                 'fg': self.COLORS['text_primary'],
-                'font': ('Consolas', 11)
+                'font': self.get_font('label')
             },
             'button': {
                 'bg': self.COLORS['button_bg'],
                 'fg': self.COLORS['neon_cyan'],
                 'activebackground': self.COLORS['neon_cyan'],
                 'activeforeground': self.COLORS['bg_primary'],
-                'font': ('Consolas', 11, 'bold'),
+                'font': self.get_font('button', bold=True),
                 'relief': 'raised',
                 'bd': 2
             },

@@ -20,6 +20,10 @@ wheels/
 .installed.cfg
 *.egg
 
+my_config.yaml
+config.yaml
+*~
+
 # Virtual environments
 .venv/
 venv/

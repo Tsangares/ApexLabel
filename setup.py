@@ -14,9 +14,9 @@ setup(
     description="Interactive object detection annotation tool with SAM and YOLO training",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Your Name",
-    author_email="your.email@example.com",
-    url="https://github.com/yourusername/ApexLabel",
+    author="William Wyatt",
+    author_email="william.wyatt@cgu.edu",
+    url="https://github.com/Tsangares/ApexLabel",
     packages=find_packages(),
     python_requires=">=3.8",
     install_requires=[
