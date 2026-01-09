@@ -164,9 +164,9 @@ class SAMAnnotator:
         """Update window title with current HITS (annotation count)"""
         if hasattr(self, 'annotation_data') and self.annotation_data:
             total_hits = sum(len(annotations) for annotations in self.annotation_data.values())
-            self.root.title(f"◢◣ SAM NEURAL INTERFACE ◤◥ - HITS: {total_hits}")
+            self.root.title(f"◢◣ ApexLabel SAM ◤◥ - HITS: {total_hits}")
         else:
-            self.root.title("◢◣ SAM NEURAL INTERFACE ◤◥ - HITS: 0")
+            self.root.title("◢◣ ApexLabel SAM ◤◥ - HITS: 0")
     
     def setup_window_close_handler(self):
         """Ensure the on_closing method is called when window is closed"""

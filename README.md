@@ -9,7 +9,13 @@
       /_/
 ```
 
-Object detection annotation tool with SAM click-to-segment and integrated YOLO training.
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)
+![License](https://img.shields.io/badge/License-LGPL--2.1-green.svg)
+![SAM](https://img.shields.io/badge/Meta-SAM-purple.svg)
+![YOLO](https://img.shields.io/badge/Ultralytics-YOLO-yellow.svg)
+
+**Free and open-source** object detection annotation tool with SAM click-to-segment. Train a YOLO model directly in the app using your annotations, then use it to auto-label new images — just review and tweak predictions instead of annotating from scratch. Bootstrap your way to a full dataset in a fraction of the time.
 
 I'm not much of a designer, so I tried to make it look like early 2000s freeware.
 
@@ -62,6 +68,18 @@ Switch to manual mode to draw bounding boxes. `Shift+Click` to delete annotation
 <p align="center">
   <img src="assets/undo.gif" alt="Undo">
 </p>
+
+---
+
+## Tech Stack
+
+| Component | Technology |
+|:----------|:-----------|
+| Segmentation | [Segment Anything (SAM)](https://github.com/facebookresearch/segment-anything) |
+| Object Detection | [Ultralytics YOLO](https://github.com/ultralytics/ultralytics) |
+| Deep Learning | PyTorch |
+| GUI | tkinter |
+| Vision Validation | LLaVA (optional) |
 
 ---
 
@@ -186,4 +204,4 @@ ApexLabel/
 
 ## License
 
-GPL-2.0 — See [LICENSE](LICENSE) for details.
+LGPL-2.1 — See [LICENSE](LICENSE.MD) for details.
