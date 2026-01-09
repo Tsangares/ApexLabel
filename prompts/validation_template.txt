@@ -1,0 +1,24 @@
+You are reviewing a cropped segment of an image.
+Your task is to determine whether this image segment contains: {TARGET_DESCRIPTION}
+
+Carefully examine the following characteristics before responding:
+
+Positive indicators:
+{POSITIVE_INDICATORS}
+
+Negative indicators:
+{NEGATIVE_INDICATORS}
+
+Respond in this exact JSON format, **with nothing else**:
+
+```
+{
+  "is_target_object": boolean,
+  "confidence": float (0.0 to 1.0),
+  "reasoning": "Explain specifically why you believe this segment is or is not the target object, mentioning visual indicators or disqualifying factors.",
+  "object_type": "detected_type" | "other" | "unclear" | null,
+  "image_quality": "clear" | "blurry" | "partial" | "unclear",
+  "visual_cues": ["list", "of", "specific", "visual", "cues"]
+}
+```
+Only output the above JSON, no extra text.

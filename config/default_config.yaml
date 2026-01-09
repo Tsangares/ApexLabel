@@ -1,0 +1,58 @@
+# SAM-Bootstrap Project Configuration
+# ====================================
+# Copy this file to your project and customize for your use case.
+#
+# REQUIRED: You must specify at least one class name before running.
+
+# REQUIRED: Define your object classes
+# At least one class name must be specified
+# Examples:
+#   class_names: ["vehicle"]
+#   class_names: ["car", "truck", "bus"]
+#   class_names: ["solar_panel"]
+#   class_names: ["building", "road"]
+class_names: []
+
+# LLaVA prompt configuration (for bootstrap training)
+# ---------------------------------------------------
+llava_prompt_file: "prompts/validation_template.txt"
+
+# Description of what to detect (used in LLaVA prompt template)
+# Example: "a vehicle such as a car, truck, or bus"
+target_description: ""
+
+# Visual indicators that suggest the object is present
+# Example for vehicles:
+#   - "Rectangular or elongated shape"
+#   - "Located on roads or parking areas"
+positive_indicators: []
+
+# Visual indicators that suggest the object is NOT present
+# Example:
+#   - "Irregular or organic shapes"
+#   - "Building rooftops or vegetation"
+negative_indicators: []
+
+# Directory paths (relative to project root)
+# ------------------------------------------
+data_dir: "./data"
+output_dir: "./output"
+models_dir: "./models"
+
+# YOLO training parameters
+# ------------------------
+default_epochs: 50
+default_batch_size: 8
+default_image_size: 640
+
+# Ollama/LLaVA configuration (for bootstrap training)
+# ---------------------------------------------------
+ollama_ports: [11434, 11435]
+llava_model: "llava:7b"
+
+# GPU configuration
+# -----------------
+# Set to "cuda:0", "cuda:1", etc. for specific GPUs
+# Set to "cpu" if no GPU available (slower)
+sam_device: "cuda:0"
+yolo_device: "cuda:0"
