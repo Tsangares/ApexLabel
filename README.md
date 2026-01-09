@@ -1,125 +1,148 @@
 # ApexLabel
 
-Interactive object detection annotation tool featuring SAM (Segment Anything Model) click-to-segment and integrated YOLO training. Built with a retro early-2000s aesthetic.
-
-## Quick Start
-
-```bash
-# Install dependencies
-./scripts/install_dependencies.sh
-
-# Activate virtual environment
-source .venv/bin/activate
-
-# Configure your project
-cp config/default_config.yaml my_config.yaml
-# Edit my_config.yaml and set class_names: ["your_object"]
-
-# Run ApexLabel
-python -m sam_annotation --config my_config.yaml data/sample_images
+```
+    ___                   __          __         __
+   /   |  ____  ___  _  _/ /   ____ _/ /_  ___  / /
+  / /| | / __ \/ _ \| |/_/ /   / __ `/ __ \/ _ \/ /
+ / ___ |/ /_/ /  __/>  </ /___/ /_/ / /_/ /  __/ /
+/_/  |_/ .___/\___/_/|_/_____/\__,_/_.___/\___/_/
+      /_/
 ```
 
-## Features
+Object detection annotation tool with SAM click-to-segment and integrated YOLO training.
 
-- **Click-to-segment**: Click on objects and SAM automatically generates precise segmentation masks
-- **Manual mode**: Fallback to drawing bounding boxes manually
-- **Threshold adjustment**: Scroll wheel to adjust segmentation sensitivity
-- **YOLO export**: Export annotations to YOLO format for training
-- **Built-in YOLO training**: Train YOLO models directly from the tool
-- **Prediction assist**: Toggle YOLO predictions to speed up annotation
-- **Retro UI**: Early-2000s inspired interface with cyberpunk theming
+Early-2000s inspired UI. Built for speed.
 
-## Keyboard Shortcuts
+---
 
-| Key | Action |
-|-----|--------|
-| Left Click | Segment object (SAM mode) / Start bbox (Manual mode) |
-| Shift+Click | Remove annotation |
-| Scroll | Adjust threshold |
-| Ctrl+Scroll | Zoom in/out |
-| Space+Drag | Pan image |
-| Arrow Keys | Navigate images |
-| Ctrl+Z | Undo last segmentation |
-| Ctrl+S | Save annotations |
+## What It Does
+
+Click on objects. SAM segments them. Train YOLO. Repeat.
+
+- **SAM Integration** — Click anywhere on an object, get a precise segmentation mask
+- **YOLO Training** — Export annotations and train models without leaving the app
+- **Prediction Assist** — Use your trained model to pre-label new images
+- **Manual Fallback** — Draw bounding boxes when SAM isn't cooperating
+
+---
+
+## Getting Started
+
+```bash
+./scripts/install_dependencies.sh
+source .venv/bin/activate
+
+# Set your class names
+cp config/default_config.yaml config.yaml
+# Edit config.yaml → class_names: ["your_object"]
+
+# Launch
+python -m sam_annotation --config config.yaml /path/to/images
+```
+
+---
+
+## Satellite Imagery
+
+Need sample images? Download tiles from ArcGIS World Imagery:
+
+```bash
+# 100 tiles around Los Angeles
+python scripts/download_satellite.py --lat 34.0522 --lon -118.2437 --count 100
+
+# Higher resolution (zoom 19 = ~0.3m/pixel)
+python scripts/download_satellite.py --lat 40.7128 --lon -74.0060 -n 50 -z 19
+
+# Custom output
+python scripts/download_satellite.py --lat 37.7749 --lon -122.4194 -o data/sf_tiles
+```
+
+Free for non-commercial use. Tiles download in a spiral pattern from center.
+
+---
+
+## Controls
+
+| Input | Action |
+|:------|:-------|
+| `Click` | Segment object at cursor |
+| `Shift+Click` | Delete annotation |
+| `Scroll` | Adjust SAM threshold |
+| `Ctrl+Scroll` | Zoom |
+| `Space+Drag` | Pan |
+| `←` `→` | Previous / Next image |
+| `Ctrl+Z` | Undo |
+| `Ctrl+S` | Save |
+
+---
+
+## Training Loop
+
+1. Annotate images with SAM
+2. Export → YOLO format
+3. Train model (built-in)
+4. Enable prediction assist
+5. Annotate faster with pre-labels
+6. Repeat
+
+Best model saves to `models/current_best_yolo.pt`
+
+---
 
 ## Configuration
 
-Create a YAML config file with your class names:
-
 ```yaml
-class_names: ["vehicle"]  # or ["car", "truck", "bus"] for multi-class
+# config.yaml
+class_names: ["car", "truck", "bus"]  # Required
+
+# Optional
+default_epochs: 50
+default_batch_size: 8
+default_image_size: 640
 ```
 
-See `config/default_config.yaml` for all options including:
-- YOLO training parameters (epochs, batch size, image size)
-- GPU device settings
-- Directory paths
-- LLaVA prompt configuration (for bootstrap validation)
+Full options in `config/default_config.yaml`
 
-## Directory Structure
+---
 
+## Bootstrap Training (Optional)
+
+For automated validation using LLaVA vision model:
+
+```bash
+# Install Ollama → https://ollama.ai
+ollama pull llava:7b
+
+# Configure prompts in config.yaml, then:
+python scripts/run_bootstrap.py --config config.yaml --start-llava
 ```
-ApexLabel/
-├── config/                 # Configuration files
-│   ├── project_config.py   # Config class
-│   └── default_config.yaml # Template config
-├── sam_annotation/         # Annotation tool
-├── bootstrap/              # Bootstrap training with LLaVA
-├── prompts/                # LLaVA prompt templates
-├── scripts/                # Helper scripts
-├── data/                   # Your data (gitignored)
-│   └── sample_images/      # Sample images
-├── output/                 # Training outputs (gitignored)
-└── models/                 # Model weights (gitignored)
-```
+
+---
 
 ## Requirements
 
 - Python 3.8+
-- CUDA-capable GPU (8GB+ VRAM recommended for SAM)
+- CUDA GPU with 8GB+ VRAM
 - Ollama (optional, for LLaVA bootstrap)
 
-## Example Workflows
+---
 
-### Basic Annotation
+## Project Structure
 
-```bash
-# 1. Configure
-echo 'class_names: ["car"]' > my_config.yaml
-
-# 2. Add images
-cp /path/to/images/*.png data/sample_images/
-
-# 3. Annotate
-python -m sam_annotation --config my_config.yaml data/sample_images
+```
+ApexLabel/
+├── sam_annotation/    # Main application
+├── bootstrap/         # LLaVA validation pipeline
+├── config/            # Configuration system
+├── prompts/           # LLaVA prompt templates
+├── scripts/           # Setup & utilities
+├── data/              # Your images (gitignored)
+├── models/            # Trained weights (gitignored)
+└── output/            # Exports (gitignored)
 ```
 
-### Train YOLO Model
-
-After annotating images:
-1. In the annotation tool, go to the "Training" tab
-2. Click "Train YOLO Model"
-3. Wait for training to complete
-4. The best model is saved to `models/current_best_yolo.pt`
-
-### Multi-class Detection
-
-```yaml
-# my_config.yaml
-class_names: ["car", "truck", "bus", "motorcycle"]
-```
-
-The annotation tool will use the first class as default, but you can change the label in the UI.
-
-### LLaVA Bootstrap (Optional)
-
-For automated bootstrap training with LLaVA validation:
-
-1. Install Ollama: https://ollama.ai
-2. Pull LLaVA model: `ollama pull llava:7b`
-3. Configure your prompts in `config/default_config.yaml`
-4. Run: `python scripts/run_bootstrap.py --config my_config.yaml --start-llava`
+---
 
 ## License
 
-MIT License
+GPL-2.0 — See [LICENSE](LICENSE) for details.
