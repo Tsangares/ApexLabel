@@ -15,7 +15,7 @@
 ![SAM](https://img.shields.io/badge/Meta-SAM-purple.svg)
 ![YOLO](https://img.shields.io/badge/Ultralytics-YOLO-yellow.svg)
 
-**Free and open-source** object detection annotation tool with SAM click-to-segment. Train a YOLO model directly in the app using your annotations, then use it to auto-label new images — just review and tweak predictions instead of annotating from scratch. Bootstrap your way to a full dataset in a fraction of the time.
+**Free and open-source** object detection annotation tool with SAM click-to-segment. Train a YOLO model directly in the app using your annotations, then use it to auto-label new images, just review and tweak predictions instead of annotating from scratch. Bootstrap your way to a full dataset in a fraction of the time.
 
 I'm not much of a designer, so I tried to make it look like early 2000s freeware.
 
